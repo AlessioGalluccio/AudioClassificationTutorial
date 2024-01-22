@@ -3,7 +3,9 @@ from torch.nn import init
 import torch
 import torch.nn as nn
 from tqdm import tqdm
+from utils import *
 
+config = read_config('config.yaml')
 
 # ----------------------------
 # Audio Classification Model
@@ -79,8 +81,9 @@ class AudioClassifier(nn.Module):
 def training(model, train_dl, num_epochs):
     # Loss Function, Optimizer and Scheduler
     criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-    scheduler = torch.optim.lr_scheduler.OneCycleLR(optimizer, max_lr=0.001,
+    learning_rate = config['learning_rate']
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+    scheduler = torch.optim.lr_scheduler.OneCycleLR(optimizer, max_lr=learning_rate,
                                                     steps_per_epoch=int(len(train_dl)),
                                                     epochs=num_epochs,
                                                     anneal_strategy='linear')
@@ -119,8 +122,8 @@ def training(model, train_dl, num_epochs):
             correct_prediction += (prediction == labels).sum().item()
             total_prediction += prediction.shape[0]
 
-            # if i % 10 == 0:    # print every 10 mini-batches
-                # print('[%d, %5d] loss: %.3f' % (epoch + 1, i + 1, running_loss / 10))
+            if i % 10 == 0:    # print every 10 mini-batches
+                print('[%d, %5d] loss: %.3f' % (epoch + 1, i + 1, running_loss / 10))
 
         # Print stats at the end of the epoch
         num_batches = len(train_dl)
