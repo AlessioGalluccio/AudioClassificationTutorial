@@ -122,8 +122,8 @@ def training(model, train_dl, num_epochs):
             correct_prediction += (prediction == labels).sum().item()
             total_prediction += prediction.shape[0]
 
-            if i % 10 == 0:    # print every 10 mini-batches
-                print('[%d, %5d] loss: %.3f' % (epoch + 1, i + 1, running_loss / 10))
+            #if i % 10 == 0:    # print every 10 mini-batches
+            #    print('[%d, %5d] loss: %.3f' % (epoch + 1, i + 1, running_loss / 10))
 
         # Print stats at the end of the epoch
         num_batches = len(train_dl)
@@ -132,6 +132,11 @@ def training(model, train_dl, num_epochs):
         print(f'Epoch: {epoch}, Loss: {avg_loss:.2f}, Accuracy: {acc:.2f}')
 
     print('Finished Training')
+
+    path_save = "./models/model_audio.pt"
+    print('Saving model in ' + path_save)
+    torch.save(model.state_dict(), path_save)
+    print('Model saved in ' + path_save)
 
 
 # ----------------------------

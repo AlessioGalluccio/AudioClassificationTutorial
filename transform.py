@@ -125,3 +125,13 @@ class AudioUtil:
             aug_spec = transforms.TimeMasking(time_mask_param)(aug_spec, mask_value)
 
         return aug_spec
+
+    @staticmethod
+    def spectrogram(waveform_tensor, np_channels, duration=4000, sr=44100, channels=2, n_mels=64, n_fft=1024, hop_len=None):
+        #reaud = AudioUtil.resample((waveform_tensor, np_channels), sr)
+        reaud = waveform_tensor, np_channels
+        rechan = AudioUtil.rechannel(reaud, channels)
+        #dur_aud = AudioUtil.pad_trunc(rechan, duration)
+        sgram = AudioUtil.spectro_gram(rechan, n_mels, n_fft, hop_len)
+
+        return sgram

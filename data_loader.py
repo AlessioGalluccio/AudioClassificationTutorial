@@ -7,13 +7,16 @@ from transform import *
 # ----------------------------
 class SoundDS(Dataset):
     def __init__(self, df, data_path, duration=4000,
-                 sr=44100, channels=2, shift_pct=0.4):
+                 sr=44100, channels=2, shift_pct=0.4, n_mels=64, n_fft=1024, hop_len=None):
         self.df = df
         self.data_path = str(data_path)
         self.duration = duration
         self.sr = sr
         self.channel = channels
         self.shift_pct = shift_pct
+        self.n_mels = n_mels
+        self.n_fft = n_fft
+        self.hop_len = hop_len
 
     # ----------------------------
     # Number of items in dataset
@@ -42,7 +45,7 @@ class SoundDS(Dataset):
 
         dur_aud = AudioUtil.pad_trunc(rechan, self.duration)
         shift_aud = AudioUtil.time_shift(dur_aud, self.shift_pct)
-        sgram = AudioUtil.spectro_gram(shift_aud, n_mels=64, n_fft=1024, hop_len=None)
+        sgram = AudioUtil.spectro_gram(shift_aud, n_mels=self.n_mels, n_fft=self.n_fft, hop_len=self.hop_len)
         aug_sgram = AudioUtil.spectro_augment(sgram, max_mask_pct=0.1, n_freq_masks=2, n_time_masks=2)
 
         return aug_sgram, class_id

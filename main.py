@@ -28,7 +28,7 @@ print(df.head())
 
 # SPLIT
 data_path = "C:/Users/al.galluccio/source/repos/AudioClassificationTutorial/UrbanSound8K/audio"
-myds = SoundDS(df, data_path)
+myds = SoundDS(df, data_path, n_mels=64, n_fft=1024)
 
 # Random split of 80:20 between training and validation
 num_items = len(myds)
