@@ -3,13 +3,16 @@ import numpy as np
 from model import *
 from transform import AudioUtil
 import time
+import wave
 
 
-CHUNK = 32768
+CHUNK = 176400
 FORMAT = pyaudio.paInt16
-CHANNELS = 1
+CHANNELS = 2
 RATE = 44100
-PATH_MODEL = "models/model_audio.pt"
+PATH_MODEL = "models/model_audio_OLD.pt"
+def wave_output_filename(iteration):
+    return f"models/output_{iteration}.wav"
 
 classes = {
     '0': "air_conditioner",
@@ -45,6 +48,17 @@ def compute_spectrogram():
     waveform_tensor = torch.unsqueeze(waveform_tensor, 0)
     spectrogram = AudioUtil.spectrogram(waveform_tensor, RATE)
     spectrogram_output = spectrogram.numpy()[0]
+
+    # save audio file
+    frames = []
+    data = stream.read(CHUNK)
+    frames.append(data)
+    wf = wave.open(wave_output_filename(1), 'wb')
+    wf.setnchannels(CHANNELS)
+    wf.setsampwidth(p.get_sample_size(FORMAT))
+    wf.setframerate(RATE)
+    wf.writeframes(b''.join(frames))
+    wf.close()
 
     with torch.no_grad():
         output = model(torch.unsqueeze(spectrogram, 0))

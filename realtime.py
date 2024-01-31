@@ -9,7 +9,7 @@ CHUNK = 32768
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
-PATH_MODEL = "models/model_audio.pt"
+PATH_MODEL = "models/model_audio_OLD.pt"
 
 p = pyaudio.PyAudio()
 

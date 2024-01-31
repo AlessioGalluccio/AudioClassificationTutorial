@@ -78,7 +78,7 @@ class AudioClassifier(nn.Module):
 # ----------------------------
 # Training Loop
 # ----------------------------
-def training(model, train_dl, num_epochs):
+def training(model, train_dl, val_dl, num_epochs):
     # Loss Function, Optimizer and Scheduler
     criterion = nn.CrossEntropyLoss()
     learning_rate = config['learning_rate']
@@ -118,6 +118,10 @@ def training(model, train_dl, num_epochs):
 
             # Get the predicted class with the highest score
             _, prediction = torch.max(outputs, 1)
+            print("Prediction:")
+            print(prediction)
+            print("Label:")
+            print(labels)
             # Count of predictions that matched the target label
             correct_prediction += (prediction == labels).sum().item()
             total_prediction += prediction.shape[0]
@@ -130,10 +134,12 @@ def training(model, train_dl, num_epochs):
         avg_loss = running_loss / num_batches
         acc = correct_prediction / total_prediction
         print(f'Epoch: {epoch}, Loss: {avg_loss:.2f}, Accuracy: {acc:.2f}')
+        print("Validation:")
+        inference(model, val_dl)
 
     print('Finished Training')
 
-    path_save = "./models/model_audio.pt"
+    path_save = "models/model_audio_OLD.pt"
     print('Saving model in ' + path_save)
     torch.save(model.state_dict(), path_save)
     print('Model saved in ' + path_save)
